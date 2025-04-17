@@ -61,3 +61,5 @@ Soovin, et koostad:
 - SQLite baasi kasutamine backendis
 - Palun kujunda õppematerjal nii, et see sobib hästi kutseõppe tasemele. Hindamiskriteeriumid võiksid sisaldada projektistruktuuri, lokaalse testimise võimekust, CI/CD toimivust, pilvedeploy toimimist ja AI kasutamise refleksiooni.
 - Palun tee frontend väga lihtsaks – üks komponent, sisestusvälja ja nupuga, mis kasutab fetch() API-t.
+
+Testin CI/CD
