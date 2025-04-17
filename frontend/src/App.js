@@ -9,7 +9,7 @@ function App() {
     const data = await response.json();
     setTodos(data);
   };
-
+//muudatus
   const addTodo = async () => {
     if (!title) return;
     await fetch(`${apiUrl}/api/todos`, {
