@@ -1,7 +1,6 @@
-version: '3'
 services:
   frontend:
-    image: todo-app-ci-cd-kta24-frontend
+    image: madelbert/todo-frontend:latest
     ports:
       - "80:80"
     environment:
@@ -10,7 +9,7 @@ services:
       - todo-network
 
   backend:
-    image: todo-app-ci-cd-kta24-backend
+    image: madelbert/todo-backend:latest
     ports:
       - "3000:3000"
     networks:
@@ -19,3 +18,5 @@ services:
 networks:
   todo-network:
     driver: bridge
+
+#test
