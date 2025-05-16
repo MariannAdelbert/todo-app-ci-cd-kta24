@@ -1,43 +1,89 @@
 import React, { useEffect, useState } from 'react';
-const apiUrl = process.env.REACT_APP_API_URL;
+
+// API URL, mis viitab backendile
+const apiUrl = 'http://localhost:3000/api';  // Tootmises vaheta see serveri aadressiga
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState('');
+  const [message, setMessage] = useState(''); // Tagasiside kasutajale
 
+  // Fetch to-dos and update state
   const fetchTodos = async () => {
-    const response = await fetch(`${apiUrl}/api/todos`);
-    const data = await response.json();
-    setTodos(data);
+    try {
+      const response = await fetch(`${apiUrl}/todos`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch todos');
+      }
+      const data = await response.json();
+      setTodos(data);
+    } catch (error) {
+      console.error('Error fetching todos:', error);
+      setMessage('Error fetching tasks!');
+    }
   };
 
+  // Add a new to-do
   const addTodo = async () => {
-    if (!title.trim()) return;
-    await fetch(`${apiUrl}/api/todos`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title }),
-    });
-    setTitle('');
-    fetchTodos();
+    if (!title.trim()) return;  // Kui tiitel on tühi, ei lisa midagi
+    console.log('Adding todo with title:', title);  // Kontrollige, kas tiitel on õigesti määratud
+  
+    try {
+      const response = await fetch(`${apiUrl}/todos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title }),
+      });
+  
+      console.log('Server response:', response);  // Kontrollige serveri vastust
+  
+      if (!response.ok) {
+        throw new Error('Failed to add todo');
+      }
+  
+      setTitle('');
+      fetchTodos();  // Laadige ülesanded uuesti
+    } catch (error) {
+      console.error('Error adding todo:', error);  // Vea logimine
+    }
   };
+  
 
+  // Toggle the completion status of a to-do
   const toggleDone = async (id, done) => {
-    await fetch(`${apiUrl}/api/todos/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ done: !done }),
-    });
-    fetchTodos();
+    try {
+      const response = await fetch(`${apiUrl}/todos/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ done: !done }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to toggle todo');
+      }
+      fetchTodos();
+    } catch (error) {
+      console.error('Error toggling todo:', error);
+      setMessage('Error updating task!');
+    }
   };
 
+  // Delete a to-do
   const deleteTodo = async (id) => {
-    await fetch(`${apiUrl}/api/todos/${id}`, {
-      method: 'DELETE',
-    });
-    fetchTodos();
+    try {
+      const response = await fetch(`${apiUrl}/todos/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete todo');
+      }
+      fetchTodos();
+    } catch (error) {
+      console.error('Error deleting todo:', error);
+      setMessage('Error deleting task!');
+    }
   };
 
+  // Fetch the to-dos when the component mounts
   useEffect(() => {
     fetchTodos();
   }, []);
@@ -53,6 +99,7 @@ function App() {
       fontFamily: 'Arial, sans-serif'
     }}>
       <h1 style={{ textAlign: 'center' }}>📝 To-do App</h1>
+      {message && <p>{message}</p>} {/* Kuvada tagasiside */}
       <div style={{ display: 'flex', marginBottom: 20 }}>
         <input
           type="text"
@@ -91,8 +138,7 @@ function App() {
             borderRadius: 4,
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
-            animation: 'fadeIn 0.3s ease-in'
+            alignItems: 'center'
           }}>
             <span
               onClick={() => toggleDone(todo.id, todo.done)}

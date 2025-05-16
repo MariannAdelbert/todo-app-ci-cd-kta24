@@ -5,12 +5,18 @@ services:
   backend:
     build: ./backend
     ports:
-      - "3000:3000"
-    # Konteiner näeb välja nagu kohalik server pordil 3000
+      - "3000:3000"  # backend server kuulab porti 3000
+    networks:
+      - app-network
 
-  # FRONTEND: React app serveeritud NGINX-iga
+  # FRONTEND: React app, serveeritud NGINX-i kaudu
   frontend:
     build: ./frontend
     ports:
-      - "80:80"
-    # Valmis build serveeritakse port 8080 kaudu
+      - "8080:80"  # React app teenindatakse port 81 kaudu
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
