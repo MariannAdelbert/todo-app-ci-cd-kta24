@@ -6,6 +6,9 @@ services:
       - "80:80"
     environment:
       - REACT_APP_API_URL=http://backend:3000
+    networks:
+      - todo-network
+
   backend:
     image: todo-app-ci-cd-kta24-backend
     ports:
@@ -16,5 +19,3 @@ services:
 networks:
   todo-network:
     driver: bridge
-
-#test
