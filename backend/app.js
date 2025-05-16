@@ -33,11 +33,25 @@ app.post('/api/todos', (req, res) => {
 
 app.put('/api/todos/:id', (req, res) => {
   const { title, done } = req.body;
-  db.run('UPDATE todos SET title = ?, done = ? WHERE id = ?', [title, done, req.params.id], function (err) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ id: req.params.id, title, done });
+
+  // Loeme olemasoleva todo, et teada saada olemasolevat title't
+  db.get('SELECT * FROM todos WHERE id = ?', [req.params.id], (err, row) => {
+    if (err || !row) return res.status(404).json({ error: 'Todo not found' });
+
+    const updatedTitle = title !== undefined ? title : row.title;
+    const updatedDone = done !== undefined ? done : row.done;
+
+    db.run(
+      'UPDATE todos SET title = ?, done = ? WHERE id = ?',
+      [updatedTitle, updatedDone, req.params.id],
+      function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ id: req.params.id, title: updatedTitle, done: updatedDone });
+      }
+    );
   });
 });
+
 
 app.delete('/api/todos/:id', (req, res) => {
   db.run('DELETE FROM todos WHERE id = ?', [req.params.id], function (err) {
