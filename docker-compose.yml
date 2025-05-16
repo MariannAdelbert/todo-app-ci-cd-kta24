@@ -12,5 +12,5 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "8080:80"
+      - "80:80"
     # Valmis build serveeritakse port 8080 kaudu
