@@ -18,5 +18,3 @@ services:
 networks:
   todo-network:
     driver: bridge
-
-#test
