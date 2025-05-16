@@ -1,20 +1,16 @@
-services:
-  frontend:
-    image: madelbert/todo-frontend:latest
-    ports:
-      - "80:80"
-    environment:
-      - REACT_APP_API_URL=http://nnairam.me:3000
-    networks:
-      - todo-network
+version: '3'
 
+services:
+  # BACKEND: Node.js server
   backend:
-    image: madelbert/todo-backend:latest
+    build: ./backend
     ports:
       - "3000:3000"
-    networks:
-      - todo-network
+    # Konteiner näeb välja nagu kohalik server pordil 3000
 
-networks:
-  todo-network:
-    driver: bridge
+  # FRONTEND: React app serveeritud NGINX-iga
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    # Valmis build serveeritakse port 8080 kaudu
