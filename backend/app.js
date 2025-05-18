@@ -4,7 +4,7 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const DB_FILE = path.join(__dirname, 'todos.db');
 
 // CORS seaded
@@ -105,8 +105,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Serveri töö alustamine
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Server kuulab portil ${port}`);
 });
 
 // SQLite ühenduse sulgemine protsessi lõpetamisel
