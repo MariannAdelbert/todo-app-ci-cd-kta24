@@ -1,27 +1,29 @@
 import React, { useEffect, useState } from 'react';
 
-// API URL, mis viitab backendile
-const apiUrl = 'http://localhost:3000/api';  // Tootmises vaheta see serveri aadressiga
+const apiUrl = process.env.NODE_ENV === 'production'
+  ? 'https://nnairam.me/api'
+  : 'http://localhost:3000/api';
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState(''); // Tagasiside kasutajale
 
-  // Fetch to-dos and update state
-  const fetchTodos = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/todos`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch todos');
-      }
-      const data = await response.json();
-      setTodos(data);
-    } catch (error) {
-      console.error('Error fetching todos:', error);
-      setMessage('Error fetching tasks!');
-    }
-  };
+  // Näide `fetch` päringust Reactis
+const fetchTodos = async () => {
+  try {
+    const response = await fetch(`${apiUrl}/todos`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error fetching todos:', error);
+  }
+};
 
   // Add a new to-do
   const addTodo = async () => {
@@ -45,6 +47,7 @@ function App() {
       fetchTodos();  // Laadige ülesanded uuesti
     } catch (error) {
       console.error('Error adding todo:', error);  // Vea logimine
+      setMessage('Error adding task!');
     }
   };
   
@@ -87,6 +90,16 @@ function App() {
   useEffect(() => {
     fetchTodos();
   }, []);
+
+  // Kontrollige, et sõnumi kuvamine töötab õigesti
+  useEffect(() => {
+    if (message) {
+      const timeout = setTimeout(() => {
+        setMessage('');
+      }, 3000); // Peidab sõnumi 3 sekundi pärast
+      return () => clearTimeout(timeout);  // Kui komponent eemaldatakse, tühistame timeouti
+    }
+  }, [message]);
 
   return (
     <div style={{
